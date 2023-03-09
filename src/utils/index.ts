@@ -1,13 +1,8 @@
-export interface Cell {
-  x: number
-  y: number
-  isMine: boolean
-  neighbors: number
-  isEmpty: boolean
-}
+import { BoardData, CellData } from '../models'
+import produce from 'immer'
 
 export const generateMines = (
-  board: Cell[][],
+  board: CellData[][],
   height: number,
   width: number,
   mines: number = 0
@@ -28,11 +23,11 @@ export const generateMines = (
 export const getNeighbors = (
   i: number,
   j: number,
-  board: Cell[][],
+  board: CellData[][],
   height: number,
   width: number
 ) => {
-  const neighbors: Cell[] = []
+  const neighbors: CellData[] = []
   const surroundings = [
     [-1, -1], // left top corner
     [-1, 0],
@@ -56,7 +51,7 @@ export const getNeighbors = (
 }
 
 export const generateNeighbors = (
-  board: Cell[][],
+  board: CellData[][],
   height: number,
   width: number
 ) => {
@@ -86,4 +81,64 @@ export const generateNeighbors = (
   }
 
   return boardCopy
+}
+
+export const initBoard = (boardData: BoardData) => {
+  const { width, height, mines } = boardData
+  const array2D = Array(width)
+    .fill(null)
+    .map((_, indexH) =>
+      Array(height)
+        .fill(null)
+        .map((_, indexW) => ({
+          x: indexH,
+          y: indexW,
+          isMine: false,
+          neighbors: 0,
+          isEmpty: false,
+          isRevealed: false,
+          isFlagged: false,
+        }))
+    )
+  let mutatedArrayWithMines = generateMines(array2D, height, width, mines)
+
+  let mutatedArrayWithNeighbors = generateNeighbors(
+    mutatedArrayWithMines,
+    height,
+    width
+  )
+
+  return mutatedArrayWithNeighbors
+}
+
+export const showEmptyCells = (
+  height: number,
+  width: number,
+  x: number,
+  y: number,
+  board: CellData[][]
+) => {
+  let neighbors = getNeighbors(x, y, board, height, width)
+  neighbors.map(cell => {
+    if (!cell.isRevealed && (cell.isEmpty || !cell.isMine)) {
+      Object.assign(board[cell.x][cell.y], { isRevealed: true })
+      if (cell.isEmpty) {
+        showEmptyCells(height, width, cell.x, cell.y, board)
+      }
+    }
+    return null
+  })
+  return board
+}
+
+export const showGrid = (board: CellData[][]) => {
+  const revealedGrid = produce(board, draft => {
+    draft.map(row =>
+      row.map(cell => {
+        return { ...cell, isRevealed: true }
+      })
+    )
+  })
+
+  return revealedGrid
 }
