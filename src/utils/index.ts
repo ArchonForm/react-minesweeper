@@ -120,7 +120,7 @@ export const showEmptyCells = (
 ) => {
   let neighbors = getNeighbors(x, y, board, height, width)
   neighbors.map(cell => {
-    if (!cell.isRevealed && (cell.isEmpty || !cell.isMine)) {
+    if (!cell.isRevealed && (cell.isEmpty || !cell.isMine) && !cell.isFlagged) {
       Object.assign(board[cell.x][cell.y], { isRevealed: true })
       if (cell.isEmpty) {
         showEmptyCells(height, width, cell.x, cell.y, board)
