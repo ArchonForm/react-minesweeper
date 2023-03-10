@@ -132,13 +132,11 @@ export const showEmptyCells = (
 }
 
 export const showGrid = (board: CellData[][]) => {
-  const revealedGrid = produce(board, draft => {
+  return produce(board, draft => {
     draft.map(row =>
       row.map(cell => {
-        return { ...cell, isRevealed: true }
+        return Object.assign(cell, { isRevealed: true })
       })
     )
   })
-
-  return revealedGrid
 }

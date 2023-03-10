@@ -1,0 +1,13 @@
+.cell {
+  cursor: pointer;
+  border: 1px solid white;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  background: #bdbdbd;
+  border: 1px solid white;
+  &.revealed {
+    background: #adddad;
+    border: 1px solid white;
+  }
+}

@@ -1,0 +1,16 @@
+.navbar {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: 30px;
+  margin-top: 30px;
+}
+
+.link {
+  font-size: 18px;
+  color: #1976d2;
+  text-decoration: none;
+}
+.link:hover {
+  color: #255a97;
+}

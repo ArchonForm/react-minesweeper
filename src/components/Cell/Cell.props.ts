@@ -1,5 +1,5 @@
 import React from 'react'
-import { CellData } from '../models'
+import { CellData } from '../../models'
 
 export interface CellProps {
   cell: CellData

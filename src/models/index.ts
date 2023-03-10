@@ -13,3 +13,9 @@ export interface BoardData {
   height: number
   mines: number
 }
+
+export interface SetupData {
+  width: number
+  height: number
+  mines: number
+}
