@@ -1,6 +1,6 @@
 import { useState, useEffect } from 'react'
 import produce from 'immer'
-import { Container, Button, Paper, Card } from '@mui/material'
+import { Container, Button, Paper, Card, IconButton } from '@mui/material'
 import { Stack } from '@mui/system'
 import ArrowBackIosIcon from '@mui/icons-material/ArrowBackIos'
 import { Cell } from '../Cell/Cell'
@@ -11,9 +11,13 @@ import styles from './Game.module.css'
 import { Emoji } from '../../enums'
 import { useAppDispatch } from '../../hooks/redux'
 import { savePlayerRecord } from '../../store/reducers/playersSlice'
+import cn from 'classnames'
 
 export const Game = ({ setupData, setGameStarted, name }: GameProps) => {
   const dispatch = useAppDispatch()
+
+  const windowWidth = document.documentElement.clientWidth
+  const isMobile = setupData.height !== 8 && windowWidth < 480
 
   const board = initBoard(setupData)
 
@@ -22,6 +26,7 @@ export const Game = ({ setupData, setGameStarted, name }: GameProps) => {
   const [gameState, setGameState] = useState<Emoji>(Emoji.GameReady)
   const [mineCount, setMineCount] = useState<number>(setupData.mines)
   const [grid, setGrid] = useState<CellData[][]>(board)
+  const [flagButtonActive, setFlagButtonActive] = useState<boolean>(false)
 
   useEffect(() => {
     if (!timerStarted) {
@@ -44,6 +49,13 @@ export const Game = ({ setupData, setGameStarted, name }: GameProps) => {
   // Обработка левого клика
   const onLeftClick = (e: React.MouseEvent, x: number, y: number) => {
     if (grid[x][y].isRevealed || grid[x][y].isFlagged) return
+
+    // Имитация правого клика для мобильной версии
+    if (flagButtonActive) {
+      onRightClick(e, x, y)
+      return
+    }
+
     const updatedGrid = produce(grid, draft => {
       Object.assign(draft[x][y], { isRevealed: true })
       if (draft[x][y].isEmpty) {
@@ -103,7 +115,7 @@ export const Game = ({ setupData, setGameStarted, name }: GameProps) => {
           <Card
             variant='outlined'
             sx={{
-              padding: '1rem',
+              padding: '0.5rem',
               marginBorrom: '1rem',
               backgroundColor: theme => theme.palette.grey[200],
               textAlign: 'center',
@@ -128,19 +140,40 @@ export const Game = ({ setupData, setGameStarted, name }: GameProps) => {
                 onClick={() => setGameStarted(false)}
                 variant='contained'
                 color='success'
+                size='small'
               >
                 New Game
               </Button>
-              <Button onClick={() => resetGame(setupData)} variant='contained'>
+              <Button
+                onClick={() => resetGame(setupData)}
+                variant='contained'
+                size='small'
+              >
                 Reset Game
               </Button>
             </Stack>
+            {windowWidth <= 768 && (
+              <Button
+                size='small'
+                className={cn(styles.flagButton, {
+                  [styles.flagButtonActive]: flagButtonActive,
+                })}
+                onClick={() => setFlagButtonActive(prev => !prev)}
+              >
+                {Emoji.Flag}
+              </Button>
+            )}
           </Card>
           <div
             style={{
               display: 'grid',
-              gridTemplateColumns: `repeat(${setupData.height}, 30px)`,
-              gridTemplateRows: `repeat(${setupData.width}, 30px)`,
+              gridTemplateColumns: `repeat(${setupData.height}, ${
+                isMobile ? '17px' : '30px'
+              })`,
+              gridTemplateRows: `repeat(${setupData.width}, ${
+                isMobile ? '17px' : '30px'
+              })`,
+              fontSize: isMobile ? '12px' : '16px',
             }}
           >
             {grid.map((row, i) =>
