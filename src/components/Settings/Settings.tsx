@@ -11,11 +11,13 @@ import {
   Container,
 } from '@mui/material'
 import React, { useState } from 'react'
-import { SetupData } from '../../models'
+import { SetupData } from '../../interfaces'
 import { SettingsProps } from './Settings.props'
+import styles from './Settings.module.css'
+import { Emoji } from '../enums'
 
 export const Settings = ({ handleSetData, name }: SettingsProps) => {
-  const presetData: Record<string, SetupData> = {
+  const preset: Record<string, SetupData> = {
     beginner: {
       width: 8,
       height: 8,
@@ -27,8 +29,8 @@ export const Settings = ({ handleSetData, name }: SettingsProps) => {
       mines: 40,
     },
     expert: {
-      width: 16,
-      height: 32,
+      width: 32,
+      height: 16,
       mines: 100,
     },
   }
@@ -41,21 +43,14 @@ export const Settings = ({ handleSetData, name }: SettingsProps) => {
 
   const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault()
-    handleSetData(presetData[difficulty], name)
+    handleSetData(preset[difficulty], name)
   }
 
   return (
     <Container component='main' maxWidth='xs'>
-      <div className='center'>
-        <Box
-          sx={{
-            marginTop: 8,
-            display: 'flex',
-            flexDirection: 'column',
-            alignItems: 'center',
-          }}
-        >
-          <Avatar sx={{ m: 1, bgcolor: 'secondary' }}>💣</Avatar>
+      <div className={styles.center}>
+        <Box className={styles.box}>
+          <Avatar sx={{ m: 1, bgcolor: 'secondary' }}>{Emoji.Mine}</Avatar>
           <Typography
             sx={{ color: 'rgb(0,0,0,.6)' }}
             component='h1'
@@ -63,14 +58,7 @@ export const Settings = ({ handleSetData, name }: SettingsProps) => {
           >
             MineSweeper
           </Typography>
-          <Paper
-            sx={{
-              marginTop: '1rem',
-              padding: '1rem',
-              width: '100%',
-            }}
-            elevation={3}
-          >
+          <Paper className={styles.paper} elevation={3}>
             <Box
               component='form'
               onSubmit={handleSubmit}

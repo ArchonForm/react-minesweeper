@@ -1,26 +1,21 @@
 import { useState, useEffect } from 'react'
+import produce from 'immer'
 import { Container, Button, Paper, Card } from '@mui/material'
+import { Stack } from '@mui/system'
 import ArrowBackIosIcon from '@mui/icons-material/ArrowBackIos'
 import { Cell } from '../Cell/Cell'
-import {
-  generateNeighbors,
-  generateMines,
-  initBoard,
-  showEmptyCells,
-  showGrid,
-} from '../../utils'
-import { CellData, SetupData } from '../../models'
-import produce from 'immer'
+import { initBoard, showEmptyCells, showGrid } from '../../utils'
+import { CellData, SetupData } from '../../interfaces'
 import { GameProps } from './Game.props'
-import { Stack } from '@mui/system'
-import styles from './Game.module.scss'
+import styles from './Game.module.css'
+import { Emoji } from '../enums'
 
 export const Game = ({ setupData, setGameStarted, name }: GameProps) => {
   const board = initBoard(setupData)
 
   const [seconds, setSeconds] = useState<number>(0)
   const [timerStarted, setTimerStarted] = useState<boolean>(false)
-  const [gameState, setGameState] = useState<string>('😁')
+  const [gameState, setGameState] = useState<Emoji>(Emoji.GameReady)
   const [mineCount, setMineCount] = useState<number>(setupData.mines)
   const [grid, setGrid] = useState<CellData[][]>(board)
 
@@ -37,13 +32,13 @@ export const Game = ({ setupData, setGameStarted, name }: GameProps) => {
   }, [seconds, timerStarted])
 
   useEffect(() => {
-    if (gameState !== '😁') {
+    if (gameState !== Emoji.GameReady) {
       setTimerStarted(false)
     }
   }, [gameState])
 
+  // Обработка левого клика
   const onLeftClick = (e: React.MouseEvent, x: number, y: number) => {
-    e.preventDefault()
     if (grid[x][y].isRevealed || grid[x][y].isFlagged) return
     const updatedGrid = produce(grid, draft => {
       Object.assign(draft[x][y], { isRevealed: true })
@@ -54,20 +49,20 @@ export const Game = ({ setupData, setGameStarted, name }: GameProps) => {
     if (updatedGrid[x][y].isMine) {
       const revealedGrid = showGrid(updatedGrid)
       setGrid(revealedGrid)
-      return setGameState('😤')
+      return setGameState(Emoji.GameOver)
     }
     const hiddenGrid = updatedGrid.flat().filter(cell => !cell.isRevealed)
     if (hiddenGrid.length === setupData.mines) {
-      setGameState('😎')
+      setGameState(Emoji.GameWin)
       showGrid(updatedGrid)
     }
     setGrid(updatedGrid)
     setTimerStarted(true)
   }
 
+  // Обработка правого клика
   const onRightClick = (e: React.MouseEvent, x: number, y: number) => {
     e.preventDefault()
-
     let mineCountPlaceholder = mineCount
     if (grid[x][y].isRevealed) return
     const updatedGrid = produce(grid, draft => {
@@ -87,14 +82,14 @@ export const Game = ({ setupData, setGameStarted, name }: GameProps) => {
   const resetGame = (setupData: SetupData) => {
     setTimerStarted(false)
     setSeconds(0)
-    setGameState('😁')
+    setGameState(Emoji.GameReady)
     setMineCount(setupData.mines)
     setGrid(initBoard(setupData))
   }
 
   return (
     <Container maxWidth='xs'>
-      <div className='center'>
+      <div className={styles.center}>
         <Paper elevation={3} sx={{ padding: '1rem' }}>
           <Card
             variant='outlined'
@@ -107,8 +102,12 @@ export const Game = ({ setupData, setGameStarted, name }: GameProps) => {
           >
             <h1 className={styles.gameStatus}>{gameState}</h1>
             <Stack justifyContent='space-between' direction='row'>
-              <h4 className={styles.span}>💣 {mineCount}</h4>
-              <h4 className={styles.span}>⏱️ {seconds}</h4>
+              <h4 className={styles.span}>
+                {Emoji.Mine} {mineCount}
+              </h4>
+              <h4 className={styles.span}>
+                {Emoji.Timer} {seconds}
+              </h4>
             </Stack>
             <Stack
               spacing={2}
@@ -131,8 +130,8 @@ export const Game = ({ setupData, setGameStarted, name }: GameProps) => {
           <div
             style={{
               display: 'grid',
-              gridTemplateColumns: `repeat(${setupData.width}, 30px)`,
-              gridTemplateRows: `repeat(${setupData.height}, 30px)`,
+              gridTemplateColumns: `repeat(${setupData.height}, 30px)`,
+              gridTemplateRows: `repeat(${setupData.width}, 30px)`,
             }}
           >
             {grid.map((row, i) =>

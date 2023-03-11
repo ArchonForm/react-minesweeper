@@ -1,12 +1,10 @@
-import './App.scss'
-import { useState } from 'react'
-import { Home } from './pages/Home/Home'
+import './App.css'
 import { Route, Routes, Navigate } from 'react-router-dom'
+import { Home } from './pages/Home/Home'
 import { Leaders } from './pages/Leaders/Leaders'
 import { Navbar } from './components/Navbar/Navbar'
 
 function App() {
-  const [gameStarted, setGameStarted] = useState<boolean>(false)
   return (
     <>
       <Navbar />

@@ -1,7 +1,7 @@
-import React, { useState } from 'react'
+import { useState } from 'react'
 import { Game } from '../../components/Game/Game'
 import { Settings } from '../../components/Settings/Settings'
-import { SetupData } from '../../models'
+import { SetupData } from '../../interfaces'
 
 export const Home = () => {
   const [name, setName] = useState<string>('')

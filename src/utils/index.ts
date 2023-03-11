@@ -1,10 +1,11 @@
-import { BoardData, CellData } from '../models'
+import { CellData, SetupData } from '../interfaces'
 import produce from 'immer'
 
+// Случайная генерация мин
 export const generateMines = (
-  board: CellData[][],
-  height: number,
-  width: number,
+  board: CellData[][] = [],
+  height: number = 0,
+  width: number = 0,
   mines: number = 0
 ) => {
   let minesPlanted = 0
@@ -20,18 +21,19 @@ export const generateMines = (
   return board
 }
 
+// Получение соседей ячейки
 export const getNeighbors = (
-  i: number,
-  j: number,
-  board: CellData[][],
-  height: number,
-  width: number
+  i: number = 0,
+  j: number = 0,
+  board: CellData[][] = [],
+  height: number = 0,
+  width: number = 0
 ) => {
   const neighbors: CellData[] = []
   const surroundings = [
-    [-1, -1], // left top corner
-    [-1, 0],
-    [-1, 1],
+    [-1, -1], // Левый верхний угол
+    [-1, 0], // Центральная верхняя
+    [-1, 1], // и т.д.
     [0, -1],
     [0, 1],
     [1, -1],
@@ -50,15 +52,16 @@ export const getNeighbors = (
   return neighbors
 }
 
+// Генерация соседей
 export const generateNeighbors = (
-  board: CellData[][],
-  height: number,
-  width: number
+  board: CellData[][] = [],
+  height: number = 0,
+  width: number = 0
 ) => {
   const boardCopy = board
 
   for (let i = 0; i < width; i++) {
-    for (let j = 0; j < width; j++) {
+    for (let j = 0; j < height; j++) {
       let mines = 0
       const area = getNeighbors(
         board[i][j].x,
@@ -69,7 +72,7 @@ export const generateNeighbors = (
       )
       area.map(cell => {
         if (cell.isMine) {
-          return mines++
+          return (mines += 1)
         }
         return 0
       })
@@ -83,7 +86,8 @@ export const generateNeighbors = (
   return boardCopy
 }
 
-export const initBoard = (boardData: BoardData) => {
+// Инициализация поля
+export const initBoard = (boardData: SetupData) => {
   const { width, height, mines } = boardData
   const array2D = Array(width)
     .fill(0)
@@ -100,25 +104,21 @@ export const initBoard = (boardData: BoardData) => {
           isFlagged: false,
         }))
     )
-  let mutatedArrayWithMines = generateMines(array2D, height, width, mines)
+  let arrayWithMines = generateMines(array2D, height, width, mines)
 
-  let mutatedArrayWithNeighbors = generateNeighbors(
-    mutatedArrayWithMines,
-    height,
-    width
-  )
-
-  return mutatedArrayWithNeighbors
+  return generateNeighbors(arrayWithMines, height, width)
 }
 
+// Показ пустых ячеек
 export const showEmptyCells = (
-  height: number,
-  width: number,
-  x: number,
-  y: number,
-  board: CellData[][]
+  height: number = 0,
+  width: number = 0,
+  x: number = 0,
+  y: number = 0,
+  board: CellData[][] = []
 ) => {
   const neighbors = getNeighbors(x, y, board, height, width)
+
   neighbors.map(cell => {
     if (!cell.isRevealed && (cell.isEmpty || !cell.isMine) && !cell.isFlagged) {
       Object.assign(board[cell.x][cell.y], { isRevealed: true })
@@ -131,6 +131,7 @@ export const showEmptyCells = (
   return board
 }
 
+// Раскрытие всего игрового поля
 export const showGrid = (board: CellData[][]) => {
   return produce(board, draft => {
     draft.map(row =>

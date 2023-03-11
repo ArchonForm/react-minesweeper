@@ -1,13 +1,14 @@
-import styles from './Cell.module.scss'
+import styles from './Cell.module.css'
 import { CellProps } from './Cell.props'
-import { CellData } from '../../models'
 import cn from 'classnames'
+import { CellData } from '../../interfaces'
+import { Emoji } from '../enums'
 
 export const Cell = ({ cell, i, j, onLeftClick, onRightClick }: CellProps) => {
   const cellValue = (data: CellData) => {
     const { isMine, isRevealed, isFlagged, neighbors } = data
-    if (!isRevealed) return isFlagged ? '🚩' : ''
-    if (isMine) return '💣'
+    if (!isRevealed) return isFlagged ? Emoji.Flag : ''
+    if (isMine) return Emoji.Mine
     if (neighbors) return neighbors
   }
 

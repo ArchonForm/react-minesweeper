@@ -6,8 +6,9 @@
   align-items: center;
   background: #bdbdbd;
   border: 1px solid white;
-  &.revealed {
+}
+
+.revealed {
     background: #b2dab2;
     border: 1px solid white;
   }
-}
