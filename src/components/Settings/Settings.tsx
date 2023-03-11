@@ -9,6 +9,7 @@ import {
   Radio,
   Button,
   Container,
+  TextField,
 } from '@mui/material'
 import React, { useState } from 'react'
 import { SetupData } from '../../interfaces'
@@ -35,6 +36,8 @@ export const Settings = ({ handleSetData, name }: SettingsProps) => {
     },
   }
 
+  const [nameValue, setNameValue] = useState<string>('')
+  const [nameError, setNameError] = useState<boolean>(false)
   const [difficulty, setDifficulty] = useState<string>('beginner')
 
   const handleChange = (e: React.ChangeEvent<any>) => {
@@ -43,6 +46,10 @@ export const Settings = ({ handleSetData, name }: SettingsProps) => {
 
   const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault()
+    if (!nameValue) {
+      setNameError(true)
+      return
+    }
     handleSetData(preset[difficulty], name)
   }
 
@@ -70,9 +77,19 @@ export const Settings = ({ handleSetData, name }: SettingsProps) => {
                   width: '100%',
                 }}
               >
+                <TextField
+                  id='outlined-basic'
+                  label='Enter your name...'
+                  variant='outlined'
+                  size='small'
+                  fullWidth
+                  sx={{ marginBottom: '10px' }}
+                  onChange={e => setNameValue(e.target.value)}
+                  error={nameError}
+                />
                 <Typography
                   sx={{
-                    fontSize: '1.5rem',
+                    fontSize: '1.4rem',
                     fontWeight: 'bold',
                     textAlign: 'center',
                     color: 'rgb(0,0,0,.6)',
