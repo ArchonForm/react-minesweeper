@@ -13,3 +13,12 @@ export interface SetupData {
   height: number
   mines: number
 }
+
+export interface PlayerRecord {
+  name: string
+  time: number
+}
+
+export interface PlayersList {
+  list: PlayerRecord[]
+}

@@ -9,8 +9,12 @@ import { CellData, SetupData } from '../../interfaces'
 import { GameProps } from './Game.props'
 import styles from './Game.module.css'
 import { Emoji } from '../enums'
+import { useAppDispatch } from '../../hooks/redux'
+import { savePlayerRecord } from '../../store/reducers/playersSlice'
 
 export const Game = ({ setupData, setGameStarted, name }: GameProps) => {
+  const dispatch = useAppDispatch()
+
   const board = initBoard(setupData)
 
   const [seconds, setSeconds] = useState<number>(0)
@@ -46,13 +50,18 @@ export const Game = ({ setupData, setGameStarted, name }: GameProps) => {
         showEmptyCells(setupData.height, setupData.width, x, y, draft)
       }
     })
+
+    // Если проиграли
     if (updatedGrid[x][y].isMine) {
       const revealedGrid = showGrid(updatedGrid)
       setGrid(revealedGrid)
       return setGameState(Emoji.GameOver)
     }
     const hiddenGrid = updatedGrid.flat().filter(cell => !cell.isRevealed)
+
+    // Если выйграли
     if (hiddenGrid.length === setupData.mines) {
+      dispatch(savePlayerRecord({ name, time: seconds }))
       setGameState(Emoji.GameWin)
       showGrid(updatedGrid)
     }
