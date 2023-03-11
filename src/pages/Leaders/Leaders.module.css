@@ -1,0 +1,18 @@
+.container {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  flex-direction: column;
+  color: black;
+  font-weight: bold;
+}
+
+.playerInfo {
+  display: flex;
+  justify-content: space-between;
+  width: 250px;
+  color: rgb(63, 63, 63);
+  font-size: 16px;
+  margin-bottom: 10px;
+  border-bottom: 1px solid #afc3d6;
+}

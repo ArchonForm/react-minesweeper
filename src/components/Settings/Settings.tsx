@@ -22,7 +22,7 @@ export const Settings = ({ handleSetData, name }: SettingsProps) => {
     beginner: {
       width: 8,
       height: 8,
-      mines: 10,
+      mines: 2,
     },
     intermediate: {
       width: 16,
@@ -50,7 +50,7 @@ export const Settings = ({ handleSetData, name }: SettingsProps) => {
       setNameError(true)
       return
     }
-    handleSetData(preset[difficulty], name)
+    handleSetData(preset[difficulty], nameValue)
   }
 
   return (
