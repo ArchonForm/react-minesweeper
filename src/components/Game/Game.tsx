@@ -8,7 +8,7 @@ import { initBoard, showEmptyCells, showGrid } from '../../utils'
 import { CellData, SetupData } from '../../interfaces'
 import { GameProps } from './Game.props'
 import styles from './Game.module.css'
-import { Emoji } from '../enums'
+import { Emoji } from '../../enums'
 import { useAppDispatch } from '../../hooks/redux'
 import { savePlayerRecord } from '../../store/reducers/playersSlice'
 

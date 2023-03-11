@@ -15,14 +15,14 @@ import React, { useState } from 'react'
 import { SetupData } from '../../interfaces'
 import { SettingsProps } from './Settings.props'
 import styles from './Settings.module.css'
-import { Emoji } from '../enums'
+import { Emoji } from '../../enums'
 
 export const Settings = ({ handleSetData, name }: SettingsProps) => {
   const preset: Record<string, SetupData> = {
     beginner: {
       width: 8,
       height: 8,
-      mines: 2,
+      mines: 10,
     },
     intermediate: {
       width: 16,

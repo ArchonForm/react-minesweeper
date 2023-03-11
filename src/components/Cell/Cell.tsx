@@ -2,7 +2,7 @@ import styles from './Cell.module.css'
 import { CellProps } from './Cell.props'
 import cn from 'classnames'
 import { CellData } from '../../interfaces'
-import { Emoji } from '../enums'
+import { Emoji } from '../../enums'
 
 export const Cell = ({ cell, i, j, onLeftClick, onRightClick }: CellProps) => {
   const cellValue = (data: CellData) => {
