@@ -2,7 +2,6 @@ import { useState, useEffect } from 'react'
 import produce from 'immer'
 import { Container, Button, Paper, Card, IconButton } from '@mui/material'
 import { Stack } from '@mui/system'
-import ArrowBackIosIcon from '@mui/icons-material/ArrowBackIos'
 import { Cell } from '../Cell/Cell'
 import { initBoard, showEmptyCells, showGrid } from '../../utils'
 import { CellData, SetupData } from '../../interfaces'
@@ -17,7 +16,7 @@ export const Game = ({ setupData, setGameStarted, name }: GameProps) => {
   const dispatch = useAppDispatch()
 
   const windowWidth = document.documentElement.clientWidth
-  const isMobile = setupData.height !== 8 && windowWidth < 480
+  const isMobile = setupData.height !== 8 && windowWidth < 400
 
   const board = initBoard(setupData)
 
@@ -48,7 +47,11 @@ export const Game = ({ setupData, setGameStarted, name }: GameProps) => {
 
   // Обработка левого клика
   const onLeftClick = (e: React.MouseEvent, x: number, y: number) => {
-    if (grid[x][y].isRevealed || grid[x][y].isFlagged) return
+    if (
+      (grid[x][y].isRevealed || grid[x][y].flagIndex > 0) &&
+      !flagButtonActive
+    )
+      return
 
     // Имитация правого клика для мобильной версии
     if (flagButtonActive) {
@@ -87,14 +90,13 @@ export const Game = ({ setupData, setGameStarted, name }: GameProps) => {
     let mineCountPlaceholder = mineCount
     if (grid[x][y].isRevealed) return
     const updatedGrid = produce(grid, draft => {
-      draft[x][y].isFlagged
-        ? (mineCountPlaceholder += 1)
-        : (mineCountPlaceholder -= 1)
+      draft[x][y].flagIndex =
+        draft[x][y].flagIndex > 1 ? 0 : draft[x][y].flagIndex + 1
 
-      if (mineCountPlaceholder >= 0 && mineCountPlaceholder <= mineCount + 1) {
-        draft[x][y].isFlagged = !draft[x][y].isFlagged
-        setMineCount(mineCountPlaceholder)
-      }
+      draft[x][y].flagIndex === 1 && (mineCountPlaceholder -= 1)
+      draft[x][y].flagIndex === 2 && (mineCountPlaceholder += 1)
+
+      setMineCount(mineCountPlaceholder)
     })
     setGrid(updatedGrid)
     setTimerStarted(true)
@@ -136,13 +138,12 @@ export const Game = ({ setupData, setGameStarted, name }: GameProps) => {
               direction={setupData.height == 8 ? 'column' : 'row'}
             >
               <Button
-                startIcon={<ArrowBackIosIcon />}
                 onClick={() => setGameStarted(false)}
                 variant='contained'
                 color='success'
                 size='small'
               >
-                New Game
+                Settings
               </Button>
               <Button
                 onClick={() => resetGame(setupData)}
@@ -153,15 +154,14 @@ export const Game = ({ setupData, setGameStarted, name }: GameProps) => {
               </Button>
             </Stack>
             {windowWidth <= 768 && (
-              <Button
-                size='small'
+              <button
                 className={cn(styles.flagButton, {
                   [styles.flagButtonActive]: flagButtonActive,
                 })}
                 onClick={() => setFlagButtonActive(prev => !prev)}
               >
                 {Emoji.Flag}
-              </Button>
+              </button>
             )}
           </Card>
           <div

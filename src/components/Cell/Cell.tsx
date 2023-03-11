@@ -6,8 +6,9 @@ import { Emoji } from '../../enums'
 
 export const Cell = ({ cell, i, j, onLeftClick, onRightClick }: CellProps) => {
   const cellValue = (data: CellData) => {
-    const { isMine, isRevealed, isFlagged, neighbors } = data
-    if (!isRevealed) return isFlagged ? Emoji.Flag : ''
+    const { isMine, isRevealed, flagIndex, neighbors } = data
+    if (!isRevealed)
+      return flagIndex ? (flagIndex === 1 ? Emoji.Flag : Emoji.Question) : ''
     if (isMine) return Emoji.Mine
     if (neighbors) return neighbors
   }

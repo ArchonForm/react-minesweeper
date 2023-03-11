@@ -17,9 +17,12 @@
 }
 
 .flagButton {
+  cursor: pointer;
   margin-top: 10px;
+  background-color: #d3d3d3;
+  outline: none;
 }
 
 .flagButtonActive {
-  background-color: #8f8f8f;
+  background-color: #f0f0f0;
 }

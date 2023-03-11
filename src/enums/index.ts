@@ -5,4 +5,5 @@ export enum Emoji {
   Mine = '💣',
   Timer = '⏱️',
   Flag = '🚩',
+  Question = '❓',
 }

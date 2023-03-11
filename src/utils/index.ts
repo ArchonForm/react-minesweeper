@@ -101,7 +101,7 @@ export const initBoard = (boardData: SetupData) => {
           neighbors: 0,
           isEmpty: false,
           isRevealed: false,
-          isFlagged: false,
+          flagIndex: 0,
         }))
     )
   let arrayWithMines = generateMines(array2D, height, width, mines)
@@ -120,7 +120,11 @@ export const showEmptyCells = (
   const neighbors = getNeighbors(x, y, board, height, width)
 
   neighbors.map(cell => {
-    if (!cell.isRevealed && (cell.isEmpty || !cell.isMine) && !cell.isFlagged) {
+    if (
+      !cell.isRevealed &&
+      (cell.isEmpty || !cell.isMine) &&
+      cell.flagIndex === 0
+    ) {
       Object.assign(board[cell.x][cell.y], { isRevealed: true })
       if (cell.isEmpty) {
         showEmptyCells(height, width, cell.x, cell.y, board)

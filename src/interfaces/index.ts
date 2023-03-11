@@ -5,7 +5,7 @@ export interface CellData {
   neighbors: number
   isEmpty: boolean
   isRevealed: boolean
-  isFlagged: boolean
+  flagIndex: number // 0 - пустая ячейка, 1 - флаг, 2 - вопрос
 }
 
 export interface SetupData {
