@@ -1,4 +1,4 @@
-import { useState } from 'react'
+import { useState, useEffect } from 'react'
 import { Container, Button, Paper, Card } from '@mui/material'
 import ArrowBackIosIcon from '@mui/icons-material/ArrowBackIos'
 import { Cell } from '../Cell/Cell'
@@ -13,23 +13,42 @@ import { CellData, SetupData } from '../../models'
 import produce from 'immer'
 import { GameProps } from './Game.props'
 import { Stack } from '@mui/system'
+import styles from './Game.module.scss'
 
 export const Game = ({ setupData, setGameStarted, name }: GameProps) => {
   const board = initBoard(setupData)
 
+  const [seconds, setSeconds] = useState<number>(0)
+  const [timerStarted, setTimerStarted] = useState<boolean>(false)
   const [gameState, setGameState] = useState<string>('😁')
   const [mineCount, setMineCount] = useState<number>(setupData.mines)
   const [grid, setGrid] = useState<CellData[][]>(board)
+
+  useEffect(() => {
+    if (!timerStarted) {
+      return
+    }
+
+    let intervalId = setInterval(() => {
+      setSeconds(seconds => seconds + 1)
+    }, 1000)
+
+    return () => clearInterval(intervalId)
+  }, [seconds, timerStarted])
+
+  useEffect(() => {
+    if (gameState !== '😁') {
+      setTimerStarted(false)
+    }
+  }, [gameState])
 
   const onLeftClick = (e: React.MouseEvent, x: number, y: number) => {
     e.preventDefault()
     if (grid[x][y].isRevealed || grid[x][y].isFlagged) return
     const updatedGrid = produce(grid, draft => {
-      {
-        Object.assign(draft[x][y], { isRevealed: true })
-        if (draft[x][y].isEmpty) {
-          showEmptyCells(setupData.height, setupData.width, x, y, draft)
-        }
+      Object.assign(draft[x][y], { isRevealed: true })
+      if (draft[x][y].isEmpty) {
+        showEmptyCells(setupData.height, setupData.width, x, y, draft)
       }
     })
     if (updatedGrid[x][y].isMine) {
@@ -43,6 +62,7 @@ export const Game = ({ setupData, setGameStarted, name }: GameProps) => {
       showGrid(updatedGrid)
     }
     setGrid(updatedGrid)
+    setTimerStarted(true)
   }
 
   const onRightClick = (e: React.MouseEvent, x: number, y: number) => {
@@ -61,9 +81,12 @@ export const Game = ({ setupData, setGameStarted, name }: GameProps) => {
       }
     })
     setGrid(updatedGrid)
+    setTimerStarted(true)
   }
 
   const resetGame = (setupData: SetupData) => {
+    setTimerStarted(false)
+    setSeconds(0)
     setGameState('😁')
     setMineCount(setupData.mines)
     setGrid(initBoard(setupData))
@@ -82,12 +105,15 @@ export const Game = ({ setupData, setGameStarted, name }: GameProps) => {
               textAlign: 'center',
             }}
           >
-            <h1>{gameState}</h1>
-            <h3>Mines remaining: {mineCount}</h3>
+            <h1 className={styles.gameStatus}>{gameState}</h1>
+            <Stack justifyContent='space-between' direction='row'>
+              <h4 className={styles.span}>💣 {mineCount}</h4>
+              <h4 className={styles.span}>⏱️ {seconds}</h4>
+            </Stack>
             <Stack
               spacing={2}
               justifyContent='center'
-              direction={setupData.height == 10 ? 'column' : 'row'}
+              direction={setupData.height == 8 ? 'column' : 'row'}
             >
               <Button
                 startIcon={<ArrowBackIosIcon />}

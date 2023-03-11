@@ -55,7 +55,7 @@ export const generateNeighbors = (
   height: number,
   width: number
 ) => {
-  let boardCopy = board
+  const boardCopy = board
 
   for (let i = 0; i < width; i++) {
     for (let j = 0; j < width; j++) {
@@ -86,7 +86,7 @@ export const generateNeighbors = (
 export const initBoard = (boardData: BoardData) => {
   const { width, height, mines } = boardData
   const array2D = Array(width)
-    .fill(null)
+    .fill(0)
     .map((_, indexH) =>
       Array(height)
         .fill(null)
@@ -118,7 +118,7 @@ export const showEmptyCells = (
   y: number,
   board: CellData[][]
 ) => {
-  let neighbors = getNeighbors(x, y, board, height, width)
+  const neighbors = getNeighbors(x, y, board, height, width)
   neighbors.map(cell => {
     if (!cell.isRevealed && (cell.isEmpty || !cell.isMine) && !cell.isFlagged) {
       Object.assign(board[cell.x][cell.y], { isRevealed: true })

@@ -17,9 +17,9 @@ import { SettingsProps } from './Settings.props'
 export const Settings = ({ handleSetData, name }: SettingsProps) => {
   const presetData: Record<string, SetupData> = {
     beginner: {
-      width: 10,
-      height: 10,
-      mines: 2,
+      width: 8,
+      height: 8,
+      mines: 10,
     },
     intermediate: {
       width: 16,
@@ -27,9 +27,9 @@ export const Settings = ({ handleSetData, name }: SettingsProps) => {
       mines: 40,
     },
     expert: {
-      width: 20,
-      height: 20,
-      mines: 99,
+      width: 16,
+      height: 32,
+      mines: 100,
     },
   }
 
