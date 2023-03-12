@@ -6,6 +6,7 @@ export const Leaders = () => {
 
   return (
     <div className={styles.container}>
+      {!players.length && <div className={styles.empty}>No records</div>}
       {players.slice(0, 10).map((player, index) => (
         <div key={player.name} className={styles.row}>
           <div className={styles.rating}>{index + 1}.</div>

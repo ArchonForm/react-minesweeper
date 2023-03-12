@@ -1,7 +1,8 @@
 import { useState, useEffect } from 'react'
 import produce from 'immer'
-import { Container, Button, Paper, Card, IconButton } from '@mui/material'
+import { Container, Button, Paper, Card } from '@mui/material'
 import { Stack } from '@mui/system'
+import ArrowBackIosIcon from '@mui/icons-material/ArrowBackIos'
 import { Cell } from '../Cell/Cell'
 import { initBoard, showEmptyCells, showGrid } from '../../utils'
 import { CellData, SetupData } from '../../interfaces'
@@ -143,7 +144,8 @@ export const Game = ({ setupData, setGameStarted, name }: GameProps) => {
                 color='success'
                 size='small'
               >
-                Settings
+                <ArrowBackIosIcon fontSize='small' />
+                Back to settings
               </Button>
               <Button
                 onClick={() => resetGame(setupData)}
