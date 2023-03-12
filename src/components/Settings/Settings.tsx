@@ -17,7 +17,7 @@ import { SettingsProps } from './Settings.props'
 import styles from './Settings.module.css'
 import { Emoji } from '../../enums'
 
-export const Settings = ({ handleSetData, name }: SettingsProps) => {
+export const Settings = ({ handleSetData }: SettingsProps) => {
   const preset: Record<string, SetupData> = {
     beginner: {
       width: 8,

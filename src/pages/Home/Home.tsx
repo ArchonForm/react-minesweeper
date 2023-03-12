@@ -27,7 +27,7 @@ export const Home = () => {
           name={name}
         />
       ) : (
-        <Settings handleSetData={handleSetData} name={name} />
+        <Settings handleSetData={handleSetData} />
       )}
     </>
   )

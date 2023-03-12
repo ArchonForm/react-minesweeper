@@ -7,14 +7,22 @@
   font-weight: bold;
 }
 
-.playerInfo {
+.row {
   display: flex;
   justify-content: space-between;
   width: 250px;
   color: rgb(63, 63, 63);
   font-size: 16px;
   margin-bottom: 10px;
+  padding-bottom: 5px;
   border-bottom: 1px solid #afc3d6;
+}
+
+.name {
+  text-overflow: ellipsis;
+  overflow: hidden;
+  white-space: nowrap;
+  max-width: 200px;
 }
 
 .rating {
