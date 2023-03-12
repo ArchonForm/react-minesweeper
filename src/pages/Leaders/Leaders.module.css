@@ -16,3 +16,9 @@
   margin-bottom: 10px;
   border-bottom: 1px solid #afc3d6;
 }
+
+.rating {
+  font-size: 14px;
+  margin-right: 5px;
+  color: #d35b36;
+}
